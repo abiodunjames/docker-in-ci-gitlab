@@ -30,6 +30,8 @@ run_tests:
     - docker-compose exec -T app pytest .
 
 push_to_registry:
+    only:
+    - master
   stage: store
   variables:
     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
