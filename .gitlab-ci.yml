@@ -1,0 +1,40 @@
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+# Official docker compose image.
+image:
+  name: docker/compose:latest
+
+services:
+  - docker:dind
+
+before_script:
+  - docker version
+  - docker-compose version
+
+stages:
+  - build
+  - test
+  - store
+
+build_image:
+  stage: build
+  script:
+    - docker-compose down
+    - docker-compose up -d --build
+
+run_tests:
+  stage: test
+  script:
+    - docker-compose exec -T app pytest .
+
+push_to_registry:
+  stage: store
+  variables:
+    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+  script:
+    - docker build -t abiodunjames/example-app .
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker push abiodunjames/example-app
