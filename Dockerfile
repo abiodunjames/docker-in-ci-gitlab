@@ -18,4 +18,4 @@ EXPOSE 3000
 RUN useradd -M appuser && chmod a+w /app
 USER appuser
 
-CMD [ "sh", "-c", "uvicorn src.main:app --reload --workers 1 --host 0.0.0.0 --port 3000" ]
+CMD [ "sh", "-c", "uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 3000" ]
